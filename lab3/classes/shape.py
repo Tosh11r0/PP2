@@ -9,7 +9,7 @@ class Square(Shape):
 
         self.length = length
 
-    def area(self):
+    def area(self): 
 
         return self.length ** 2 
 
