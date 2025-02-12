@@ -8,6 +8,9 @@ def solve(num_heads, num_legs):
 num_heads = 35
 num_legs = 94
 result = solve(num_heads, num_legs)
+
+
+
 if result != "No solution":
     chickens, rabbits = result
     print(f"Chickens: {chickens}, Rabbits: {rabbits}")
