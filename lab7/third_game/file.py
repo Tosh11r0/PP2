@@ -14,7 +14,7 @@ BLUE = (0,0,255)
 BLACK = (0,0,0)
 font = pygame.font.Font(None,36)
 
-x_sphere, y_sphere = (WIDTH//2), (HIGHT//2)
+x_sphere, y_sphere = (WIDTH//2), (HIGHT//2) #координаты шара (в центре экрана).
 w_sphere, h_sphere = 50, 50
 color_sphere = RED
 color_berry = BLUE

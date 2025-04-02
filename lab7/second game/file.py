@@ -5,18 +5,18 @@ pygame.init()
 
 WIDTH, HEIGHT = 800, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Second game")
+pygame.display.set_caption("Second game") #создаем экран для проигрвыателя
 
 WHITE = (255, 255, 255)
-font = pygame.font.Font(None, 36)
+font = pygame.font.Font(None, 36) #дефолт дизайн для кнопок
 
-music_folder = r"lab7\second game"
-playlist = [os.path.join(music_folder, f) for f in os.listdir(music_folder) if f.endswith('.mp3')]
+music_folder = r"lab7\second game" #путь к папке с музыкой
+playlist = [os.path.join(music_folder, f) for f in os.listdir(music_folder) if f.endswith('.mp3')] # список всех .mp3 файлов в папке.
 current_track = 0
 
 pygame.mixer.init()
 
-def play_track(index):
+def play_track(index):  #загружает и начинает воспроизводить трек с заданным индексом.
     pygame.mixer.music.load(playlist[index])
     pygame.mixer.music.play()
 
