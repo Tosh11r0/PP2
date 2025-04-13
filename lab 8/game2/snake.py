@@ -1,93 +1,68 @@
-import pygame  # Импортируем библиотеку pygame для создания игры
-import random  # Импортируем random для генерации случайных координат яблока
+import pygame
+import random
 
-# Размер одной клетки (один шаг змейки)
 size = 30
-half_size = size // 2  # Половина размера клетки (можно использовать для центрирования)
+half_size = size // 2
 
-# Размер окна (игрового поля), округляется до ближайшего кратного двойному size
 res = 750
-res = res // size // 2 * 2 * size  # Гарантируем, что размер поля делится на size*2
+res = res // size // 2 * 2 * size
 
-# Начальная позиция змейки (по центру экрана)
 snake_start_pos = res // 2
-
-# Начальная длина змейки
 length = 4
-
-# Список координат змейки, начинается с одной клетки в центре
 snake = [(snake_start_pos, snake_start_pos)]
-
-# Начальное направление движения: вправо
 dx, dy = size, 0
 
-# Создание игрового окна
 pygame.init()
-screen = pygame.display.set_mode((res, res))  # Устанавливаем размеры окна
-clock = pygame.time.Clock()  # Таймер для регулировки FPS
+screen = pygame.display.set_mode((res, res))
+clock = pygame.time.Clock()
 
-# Генерируем случайную позицию яблока (координаты кратны size, чтобы совпадали с сеткой)
 apple = (random.randrange(0, res, size), random.randrange(0, res, size))
 
-# Основной игровой цикл
+score = 0
+font = pygame.font.Font(None, 36)
+
 is_running = True
 while is_running:
-    # Обработка событий (например, закрытие окна)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            is_running = False  # Завершаем игру
+            is_running = False
 
-    # Обработка клавиш для управления направлением змейки
-    keys = pygame.key.get_pressed()  # Получаем список нажатых клавиш
-    if keys[pygame.K_UP] and dy == 0:  # Вверх, если не идём уже вверх/вниз
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP] and dy == 0:
         dx, dy = 0, -size
-    elif keys[pygame.K_DOWN] and dy == 0:  # Вниз
+    elif keys[pygame.K_DOWN] and dy == 0:
         dx, dy = 0, size
-    elif keys[pygame.K_LEFT] and dx == 0:  # Влево
+    elif keys[pygame.K_LEFT] and dx == 0:
         dx, dy = -size, 0
-    elif keys[pygame.K_RIGHT] and dx == 0:  # Вправо
+    elif keys[pygame.K_RIGHT] and dx == 0:
         dx, dy = size, 0
 
-    # Получаем координаты головы змейки
     head_x, head_y = snake[-1]
-    # Вычисляем новые координаты головы
     new_head = (head_x + dx, head_y + dy)
-    # Добавляем новую голову в список змейки
+    new_head = (new_head[0] % res, new_head[1] % res)
     snake.append(new_head)
 
-    # Если змейка не съела яблоко — удаляем хвост
     if len(snake) > length:
         del snake[0]
 
-    # Проверка: съела ли змейка яблоко?
     if new_head == apple:
-        length += 1  # Увеличиваем длину змейки
+        length += 1
+        score += 1
         while True:
-            # Генерируем новую позицию яблока
             apple = (random.randrange(0, res, size), random.randrange(0, res, size))
-            if apple not in snake:  # Убедимся, что яблоко не появляется внутри змейки
+            if apple not in snake:
                 break
 
-    # Проверка: врезалась ли змейка в стену?
-    if not (0 <= new_head[0] < res and 0 <= new_head[1] < res):
-        is_running = False  # Игра закончена
+    if len(snake) != len(set(snake)):
+        is_running = False
 
-    # Проверка: столкнулась ли змейка с самой собой?
-    if len(snake) != len(set(snake)):  # Если в списке змейки есть дубликаты
-        is_running = False  # Игра закончена
-
-    # Отрисовка
-    screen.fill((0, 0, 0))  # Заливаем фон чёрным
-
-    # Рисуем каждую часть тела змейки
+    screen.fill((0, 0, 0))
     [pygame.draw.rect(screen, (0, 255, 0), (x, y, size, size)) for x, y in snake]
-
-    # Рисуем яблоко — красный квадрат на позиции яблока
     pygame.draw.rect(screen, (255, 0, 0), (apple[0], apple[1], size, size))
+    score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
 
-    # Обновляем экран
     pygame.display.flip()
-    clock.tick(10)  # Частота кадров: 10 FPS
+    clock.tick(10)
 
-# Выход из pygame
 pygame.quit()
